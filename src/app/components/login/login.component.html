@@ -1,0 +1,19 @@
+<div class="container" >
+    <form [formGroup]="loginForm" (ngSubmit)="enviar()" >
+        <p class="text-danger">{{loginError}} </p>
+        <div class="mb-3">
+          <label for="email" class="form-label">Corre electronico</label>
+          <input [ngClass]="{'is-invalid': hasErrors('email','email') || hasErrors('email','required')}"
+          type="email" class="form-control" id="email" aria-describedby="emailHelp" formControlName="email" >
+          <div class="text-danger" *ngIf="hasErrors('email','email')" >Correo formato invalido</div>
+          <div class="text-danger" *ngIf="hasErrors('email','required')" >Correo requerido</div>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input [ngClass]="{'is-invalid': hasErrors('password','required')}"
+          type="password" class="form-control" id="password" formControlName="password" >
+          <div class="text-danger" *ngIf="hasErrors('password','required')" >Contraseña requerida</div>
+        </div>
+        <button type="submit" class="btn btn-primary" >Enviar</button>
+    </form>
+</div>
