@@ -11,5 +11,7 @@ import { FileUploadComponent } from './components/file-upload/file-upload.compon
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'Guardar archivos con Angular y SpringBoot';
+  userLoginOn:boolean = false
+
+  
 }
