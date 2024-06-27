@@ -1,2 +1,8 @@
 <p *ngIf="!userLoginOn">Usuario no autenticado</p>
 <p *ngIf="userLoginOn">Usuario autenticado</p>
+
+<div *ngIf="userLoginOn">
+    <p>Correo: {{userData?.email}} </p>
+    <p>mensaje: {{userData?.message}} </p>
+    <p>status: {{userData?.status}} </p>
+</div>

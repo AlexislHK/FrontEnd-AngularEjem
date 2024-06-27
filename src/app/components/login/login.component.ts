@@ -53,8 +53,7 @@ export class LoginComponent {
       })
     }else{
       this.loginForm.markAllAsTouched();
-    }
-    
+    } 
   }
 
 }
