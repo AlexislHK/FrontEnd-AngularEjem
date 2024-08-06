@@ -39,7 +39,7 @@ export class LoginComponent {
     if(this.loginForm.valid){
       this.loginService.login(this.loginForm.value as LoginRequest).subscribe({
         next:(userData)=>{
-          console.log(userData.email) 
+          console.log("si funciona",userData) 
         },
         error:(errorData)=>{
           console.log(errorData)

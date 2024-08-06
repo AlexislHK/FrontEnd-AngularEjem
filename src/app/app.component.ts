@@ -11,14 +11,10 @@ import { LoginService } from './Service/auth/login.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit,OnDestroy {
+export class AppComponent implements OnInit {
   userLoginOn:boolean = false
 
   constructor(private loginService:LoginService ){}
-
-  ngOnDestroy(): void {
-    this.loginService.currentUserLoginOn.unsubscribe();
-  }
 
   ngOnInit(): void {
     this.loginService.currentUserLoginOn.subscribe({
@@ -28,6 +24,9 @@ export class AppComponent implements OnInit,OnDestroy {
     })
   }
 
+  logout():void{
+    this.loginService.logout();
+  }
 
   
 }

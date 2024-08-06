@@ -2,23 +2,19 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoginService } from '../../Service/auth/login.service';
 import { User } from '../../Service/auth/user';
+import { PersonalDetailComponent } from "../personal-detail/personal-detail.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PersonalDetailComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit {
   userLoginOn:boolean = false;
-  userData?:User;
 
   constructor(private loginService:LoginService){}
-  ngOnDestroy(): void {
-    this.loginService.currentUserLoginOn.unsubscribe();
-    this.loginService.currentUserData.unsubscribe();
-  }
 
   ngOnInit(): void {
     this.loginService.currentUserLoginOn.subscribe({
@@ -27,10 +23,5 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.loginService.currentUserData.subscribe({
-      next:(userData) =>{
-        this.userData = userData;
-      }
-    })
   }
 }

@@ -1,5 +1,5 @@
 export interface User {
-    email:   string;
-    message?: string;
-    status?:  boolean;
+    id?:   number;
+    name?: string;
+    email?:  string;
 }
