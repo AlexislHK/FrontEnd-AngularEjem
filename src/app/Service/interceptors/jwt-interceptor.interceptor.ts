@@ -1,5 +1,5 @@
-import { HttpErrorResponse, HttpEventType, HttpInterceptorFn } from '@angular/common/http';
-import { catchError, tap, throwError } from 'rxjs';
+import { HttpErrorResponse, HttpEventType, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import { catchError, of, tap, throwError } from 'rxjs';
 
 export const jwtInterceptorInterceptor: HttpInterceptorFn = (req, next) => {
   const authToken = sessionStorage.getItem("token");
@@ -16,53 +16,80 @@ export const jwtInterceptorInterceptor: HttpInterceptorFn = (req, next) => {
     return next(authReq).pipe(
       tap({
         next: event => {
-          if (event.type === HttpEventType.Response) {
-              if (event.status === 302) {
-                  // Manejar la redirección aquí
-                  const redirectUrl = event.headers.get('');
-                  if (redirectUrl) {
-                      window.location.href = redirectUrl;
-                  }
-              }
+          if (event instanceof HttpErrorResponse && event.status === 302) {
+            // Modificar el estado a 200
+            const modifiedResponse = event.clone({ status: 200 });
+            return of(modifiedResponse);
           }
-      },
-      error: (error: HttpErrorResponse) => {
+          return event; // Asegúrate de retornar el evento si no es 302
+        },
+        error: (error: HttpErrorResponse) => {
           if (error.status === 302) {
-              // Extraer información del error
-              const errorData = error.error;
-              console.log('Error Data:', errorData);
+            // Extraer información del error
+            const errorData = error.error;
+            console.log('Error Data:', errorData);
 
-              const userData = JSON.stringify(errorData)
-              localStorage.setItem('user',userData)
-              
+            const userData = JSON.stringify(errorData);
+            localStorage.setItem('user', userData);
 
+            // Crear una respuesta exitosa con los datos del error
+            const modifiedResponse = new HttpResponse({
+              body: errorData,
+              status: 200,
+              statusText: 'OK',
+              headers: error.headers
+              //url: error.url
+            });
+
+            return of(modifiedResponse);
           }
-      }
-    })
-
-
-
-
-
-
-      // catchError((err:any) =>{
-      //   if(err instanceof HttpErrorResponse){
-      //     if (err.status === 401){
-      //       //Manejo especifico para errores de autorizacion
-      //       console.error('Solicitud no authorizada:',err)
-      //     } else {
-      //       //Manejar otro codigos de errores de HTTP
-      //       console.error('Http error:',err)
-      //     }
-      //   }else{
-      //     //Manejar errores que no son de HTTP
-      //     console.error('Ocurrio un error:',err)
-      //   }
-
-      //   return throwError(()=>err)
-        
-      // })
-    )
+          return (error); // Asegúrate de retornar el error si no es 302
+        }
+      })
+    );
+    
+    
+    
+    
+    // .pipe(
+    //   tap(event => {
+    //     if (event instanceof HttpResponse && event.status === 302) {
+    //       // Modificar el estado a 200
+    //       const modifiedResponse = event.clone({ status: 200 });
+    //       return of(modifiedResponse);
+    //     }
+    //   }),
+    //   catchError((error: HttpErrorResponse) => {
+    //     if (error.status === 302) {
+    //       // Extraer información del error
+    //       const errorData = error.error;
+    //       console.log('Error Data:', errorData);
+    
+    //       const userData = JSON.stringify(errorData);
+    //       localStorage.setItem('user', userData);
+    
+    //       // Crear una respuesta exitosa con los datos del error
+    //       const modifiedResponse = new HttpResponse({
+    //         body: errorData,
+    //         status: 200,
+    //         statusText: 'OK',
+    //         headers: error.headers
+    //         //url: error.url
+    //       });
+    
+    //       return of(modifiedResponse);
+    //     }
+    //     return throwError(error)
+    //   })
+    // );
+    
+    
+    
+    
+    
+    
+    
+    
   }else{
      return next(req);
   }
